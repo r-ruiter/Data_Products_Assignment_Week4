@@ -19,7 +19,6 @@ Selecting and presenting data
 ========================================================
 
 ```{r setup, echo=FALSE}
-# https://github.com/spujadas/coursera-ddp-shiny
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(lazyeval))
 suppressPackageStartupMessages(library(ggplot2))
