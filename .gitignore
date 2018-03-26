@@ -1,0 +1,28 @@
+.Rhistory
+.Rapp.history
+.Rproj.user
+.RData
+.Ruserdata
+.RProj
+.dcf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# =========================
+# Operating System Files
+# =========================
+
+# Windows
+# =========================
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+rsconnect/

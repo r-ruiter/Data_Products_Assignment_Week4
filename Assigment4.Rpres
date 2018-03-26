@@ -1,0 +1,79 @@
+Storm Data across the USA 1950-2011 (Shiny App)
+========================================================
+author: Robert Ruiter
+date: 26 March 2018
+autosize: true
+
+Summary
+========================================================
+
+This app belongs to a shiny app published on [RStudio](https://rruiter.shinyapps.io/StormData/).
+The app is about severe weather events across the USA, ranging from 1950 to 2011.
+
+Cleaning and grouping the data has already been done (for details about this process you can view this on [Severe Weather](https://github.com/r-ruiter/SevereWeather)).  
+You can select Year or Eventtype and type of harm. Plotting and corresponding table of results adopt to the changes or  selections you make.
+
+The code for both apps you'll find on GitHub: [Data_Products_assignment_Week4](https://github.com/r-ruiter/Data_Products_Assignment_Week4).
+
+Selecting and presenting data
+========================================================
+
+```{r setup, echo=FALSE}
+# https://github.com/spujadas/coursera-ddp-shiny
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(lazyeval))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(xtable))
+
+top_10 <- function(df, group_name, column_name) {
+    df %>%
+        ungroup() %>%
+        select_(interp(~c(grp, col), .values = list(grp = as.name(group_name), col = as.name(column_name)))) %>%
+        transmute_(GRP = interp(~grp, grp = as.name(group_name)), VAL = interp(~col, col = as.name(column_name))) %>%
+        group_by(GRP) %>%
+        summarise_all(funs(sum)) %>%
+        arrange(VAL) %>%
+        top_n(10, VAL) -> t010
+    t010$GRP <- factor(t010$GRP, levels = t010$GRP[order(t010$VAL)])
+    return(t010)
+}
+```
+Read the data.
+```{r readdata}
+if(!exists("dfStorm")) {
+    dfStorm <- readRDS("data/Events.rds")
+}
+# Assign variables:
+vType = c("EVTYPE", "Eventtype")
+vCategory = c("TOTALDAMAGE", "Total damage")
+```
+Select with the variables the top 10. In this case we show which events causes the most total damage (in billions of dollars).
+```{r top10}
+t10 <- top_10(dfStorm, vType[1], vCategory[1])
+```
+We now have the top 10 which can be shown.
+
+Output
+========================================================
+
+```{r plotting, echo=FALSE}
+ylab <- vCategory[2]
+g <- ggplot(t10, aes(x = GRP, y = VAL, fill = VAL))
+g <- g + theme_bw()
+g <- g + geom_bar(stat = "identity")
+g <- g + coord_flip()
+g <- g + scale_fill_gradient2(low = "purple", high = "blue", guide = F)
+g <- g + labs(x = "", y = ylab, title ="Top 10 harm")
+g <- g + theme(plot.title = element_text(hjust = 0.5))
+g
+```
+
+***
+
+```{r table, results="asis", echo=FALSE}
+df <- t10[order(t10$VAL, decreasing = T),]
+colnames(df) <- c(vType[2], vCategory[2])
+xt <- xtable(df)
+display(xt)[3] <- "d"
+print(xt, type = "html")
+```

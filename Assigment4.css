@@ -1,0 +1,17 @@
+.section .reveal .state-background {
+    background-color: #773d22;
+    color: #FFFFFD;
+}
+
+.reveal .state-background {
+    background-color: #FFFFFD;
+}
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+    color: #773d22;
+}
+.reveal p {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: .9em;
+}
